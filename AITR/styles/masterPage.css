@@ -1,0 +1,21 @@
+﻿body {
+}
+
+
+.header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    /*background-color: cadetblue;*/
+}
+
+#image1 {
+    Width : 150px;
+    Height: 150px;
+}
+
+#headerLable{
+    font-size : 40px;
+    margin: auto;
+}
