@@ -7,15 +7,15 @@
     <div class="container">
         <div class="startSurveyContainer">
             <asp:Label ID ="welcomeSurveyLabel" runat="server" Text="Welcome To AIT Survey"></asp:Label>
-            <asp:Button ID="startSurveyButton" runat="server" Text="Start" />
+            <asp:Button ID="startSurveyButton" runat="server" Text="Start" OnClick="startSurveyButton_Click"/>
         </div>
 
 
         <div class="loginContainer">
-            <asp:Label ID="staffLoginLabel" runat="server" Text="staff Login"></asp:Label>
+            <asp:Label ID="staffLoginLabel" runat="server" Text="Staff Login"></asp:Label>
             <asp:TextBox ID="userNameTextBox" runat="server"></asp:TextBox>
             <asp:TextBox ID="userPasswordTextBox" runat="server"></asp:TextBox>
-            <asp:Button ID="loginButton" runat="server" Text="Login" />
+            <asp:Button ID="loginButton" runat="server" Text="Login" OnClick="loginButton_Click" />
         </div>
     </div>
 </asp:Content>

@@ -6,6 +6,14 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
     <div class="container">
-        <asp:Label ID="surveyPageLabel" runat="server" Text="Survey Page"></asp:Label>
+        <asp:Label ID="questionLabel" runat="server" Text="question"></asp:Label>
+        <asp:PlaceHolder ID="answerPlaceHolder" runat="server"></asp:PlaceHolder>
+
+        <div class="buttonContainer">
+            <asp:Button class="navButton" ID="cancelButton" runat="server" Text="Cancel" OnClick="cancelButton_Click" />
+            <asp:Button class="navButton" ID="nextButton" runat="server" Text="Next" />
+        </div>
+
+
     </div>
 </asp:Content>

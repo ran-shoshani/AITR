@@ -1,8 +1,21 @@
 ﻿body {
 }
+
 .container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
+}
+
+.buttonContainer {
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+}
+
+.navButton {
+    width: 80px;
+    height: 50px;
+    border-radius: 5px;
 }
