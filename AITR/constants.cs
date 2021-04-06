@@ -13,9 +13,9 @@ namespace AITR
         public const String SESSION_ANSWER = "answer";
         public const String SESSION_TEXTBOX_OPTION_ID = "textbox_option_id";
 
-        public const String SESSION_EXTRA_QUESTION = "extra_question";
         public const String SESSION_NEXT_QUESTION_ID = "next_question_id";
 
+        public const String SESSION_QUESTION_ID = "session_question_id";
 
         public const String SESSION_RESPONDENT = "respondent";
         public const String SESSION_DATE = "today";
