@@ -15,16 +15,16 @@ namespace AITR
         {
 
             int currentQuestionID = GetQuestionIDFromSession();
+            List<int> extraQuestions = new List<int>();
 
 
-
+            // block of code that runs while there is connection to database
             using (SqlConnection connection = OpenSqlConnection())
             {
 
                 // build sql command to fetch question and options from database
                 SqlCommand getQuestionWithOptionsCommand = new SqlCommand(Constants.SQL_QUERY_GET_CURRENT_QUESTION_WITH_OPTIONS + currentQuestionID, connection);
                 SqlDataReader questionWithOptionsReader;
-
 
                 // try executing the commmand and put the data in a SqlDataReader
                 try
@@ -73,6 +73,7 @@ namespace AITR
                             //create a radiobutton list and assign and ID
                             RadioButtonList radioButtonList = new RadioButtonList();
                             radioButtonList.ID = Constants.RADIOBUTTONS_ANSWER_ID;
+
 
 
                             // add the first row of data to the radio button list
@@ -131,7 +132,15 @@ namespace AITR
         /// <param name="e"></param>
         protected void nextButton_Click(object sender, EventArgs e)
         {
+           
+
+            int currentQuestionID = GetQuestionIDFromSession();
             
+            // block of code that runs while there is connection to database
+            using (SqlConnection connection = OpenSqlConnection())
+            {
+
+            }
         }
 
 
