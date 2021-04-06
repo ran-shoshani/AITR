@@ -11,7 +11,7 @@
 
         <div class="buttonContainer">
             <asp:Button class="navButton" ID="cancelButton" runat="server" Text="Cancel" OnClick="cancelButton_Click" />
-            <asp:Button class="navButton" ID="nextButton" runat="server" Text="Next" />
+            <asp:Button class="navButton" ID="nextButton" runat="server" Text="Next" OnClick="nextButton_Click" />
         </div>
 
 
