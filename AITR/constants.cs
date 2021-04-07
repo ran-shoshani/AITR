@@ -10,7 +10,8 @@ namespace AITR
     {
 
         public const String SESSION_EXTRA_QUESTIONS = "extra_questions";
-        public const String SESSION_ANSWER = "answer";
+        public const String SESSION_ANSWER_LIST = "answer_list";
+        public const String SESSION_ANSWER_SEPERATOR = "±";
         public const String SESSION_TEXTBOX_OPTION_ID = "textbox_option_id";
 
         public const String SESSION_NEXT_QUESTION_ID = "next_question_id";
@@ -21,7 +22,7 @@ namespace AITR
         public const String SESSION_DATE = "today";
         public const String SESSION_IP = "ip_address";
         /*public const String*/
-        public const String DB_CONNECTION_STRING = "DatabaseConnection";
+        public const String DB_CONNECTION_STRING = "database_connection";
 
 
         public const String DB_COLUMN_QUESTION_ID = "question_id";
@@ -30,7 +31,7 @@ namespace AITR
 
     
         public const String SQL_QUERY_GET_CURRENT_QUESTION_WITH_OPTIONS = "SELECT [question].question_id, [question].text, [question].question_type, [question].next_question_id, [option].option_id, [option].value, [option].extra_question_id FROM [question] INNER JOIN [option] ON [question].question_id = [option].question_id WHERE [question].question_id = ";
-
+        public const String SQL_QUERY_GET_NEXT_QUESTION_ID = "SELECT next_question_id FROM [question] WHERE question_id = ";
 
 
         public const String DB_QUESTION_TABLE_TEXT = "text";

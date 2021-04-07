@@ -6,5 +6,7 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <div class="container">
         <asp:Label ID="registerPageLabel" runat="server" Text="Register Page"></asp:Label>
+        <br />
+        <asp:PlaceHolder ID="AnswerList" runat="server"></asp:PlaceHolder>
     </div>
 </asp:Content>

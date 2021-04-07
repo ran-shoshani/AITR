@@ -147,9 +147,20 @@ namespace AITR
         protected void nextButton_Click(object sender, EventArgs e)
         {
 
-
+            // local variables
             int currentQuestionID = GetQuestionIDFromSession();
             List<int> extraQuestions = new List<int>();
+            List<String> answerList = new List<String>();
+
+
+            // check the session for answers and stores it the local variable 
+            if(GetSessionAnswerList().Count != 0)
+            {
+                answerList.AddRange(GetSessionAnswerList());
+            }
+
+            
+
 
             if (HttpContext.Current.Session[Constants.SESSION_EXTRA_QUESTIONS] != null)
             {
@@ -161,19 +172,68 @@ namespace AITR
             using (SqlConnection connection = OpenSqlConnection())
             {
 
-                // build sql command to fetch question and options from database
-                SqlCommand getQuestionWithOptionsCommand = new SqlCommand(Constants.SQL_QUERY_GET_CURRENT_QUESTION_WITH_OPTIONS + currentQuestionID, connection);
-                SqlDataReader questionWithOptionsReader;
+                // build sql command to fetch next question 
+                //
+                SqlCommand getNextQuestionIdCommand = new SqlCommand(Constants.SQL_QUERY_GET_NEXT_QUESTION_ID + currentQuestionID, connection);
+                SqlDataReader nextQuestionIdReader;
 
                 // try executing the commmand and put the data in a SqlDataReader
                 try
                 {
-                    questionWithOptionsReader = getQuestionWithOptionsCommand.ExecuteReader();
+                    nextQuestionIdReader = getNextQuestionIdCommand.ExecuteReader();
 
                 }
                 catch (Exception ex)
                 {
                     throw new Exception(ex.Message);
+                }
+
+
+                // check the answer for textbox answer 
+                TextBox textBox = (TextBox)answerPlaceHolder.FindControl(Constants.TEXTBOX_ANSWER_ID);
+                // store the textbox answers with option and question id in the session
+                if (textBox != null)
+                {
+                    String answer = textBox.Text + Constants.SESSION_ANSWER_SEPERATOR + (int)HttpContext.Current.Session[Constants.SESSION_TEXTBOX_OPTION_ID] + Constants.SESSION_ANSWER_SEPERATOR  + (int)HttpContext.Current.Session[Constants.SESSION_QUESTION_ID];
+                    answerList.Add(answer);
+                    HttpContext.Current.Session[Constants.SESSION_ANSWER_LIST] = answerList;
+                    
+                    // check if 
+
+                    
+                }
+
+                // check the answer for radiobutton answer 
+                RadioButtonList radioButtonList = (RadioButtonList)answerPlaceHolder.FindControl(Constants.RADIOBUTTONS_ANSWER_ID);
+                // store the radiobutton answers with option and question id in the session
+                if (radioButtonList != null)
+                {
+                    foreach(ListItem radioButton in radioButtonList.Items)
+                    {
+                        if (radioButton.Selected)
+                        {
+                            String answer = radioButton.Text + Constants.SESSION_ANSWER_SEPERATOR + radioButton.Value + Constants.SESSION_ANSWER_SEPERATOR + (int)HttpContext.Current.Session[Constants.SESSION_QUESTION_ID];
+                            answerList.Add(answer);
+                            HttpContext.Current.Session[Constants.SESSION_ANSWER_LIST] = answerList;
+                        }
+                    }
+                }
+
+                // check the answer for checkBoxList answer 
+                CheckBoxList checkBoxList = (CheckBoxList)answerPlaceHolder.FindControl(Constants.CHECKBOX_ANSWER_ID);
+                // store the checkBoxList answers with option and question id in the session
+                if(checkBoxList != null)
+                {
+                    foreach(ListItem checkBox in checkBoxList.Items)
+                    {
+                        if (checkBox.Selected)
+                        {
+                            String answer = checkBox.Text + Constants.SESSION_ANSWER_SEPERATOR + checkBox.Value + Constants.SESSION_ANSWER_SEPERATOR + (int)HttpContext.Current.Session[Constants.SESSION_QUESTION_ID];
+                            answerList.Add(answer);
+                            HttpContext.Current.Session[Constants.SESSION_ANSWER_LIST] = answerList;
+                        }
+                    }
+
                 }
 
 
@@ -188,10 +248,10 @@ namespace AITR
 
 
 
-                if (questionWithOptionsReader.Read())
+                if (nextQuestionIdReader.Read())
                 {
-                    int nextQuestionIdColumnIndex = questionWithOptionsReader.GetOrdinal(Constants.DB_QUESTION_TABLE_NEXT_QUESTION_ID);
-                    if (questionWithOptionsReader.IsDBNull(nextQuestionIdColumnIndex))
+                    int nextQuestionIdColumnIndex = nextQuestionIdReader.GetOrdinal(Constants.DB_QUESTION_TABLE_NEXT_QUESTION_ID);
+                    if (nextQuestionIdReader.IsDBNull(nextQuestionIdColumnIndex))
                     {
                         //survey is finished
                         //create respondent
@@ -200,7 +260,7 @@ namespace AITR
                     }
                     else
                     {
-                        int nextQuestion_id = (int)questionWithOptionsReader[Constants.DB_QUESTION_TABLE_NEXT_QUESTION_ID];
+                        int nextQuestion_id = (int)nextQuestionIdReader[Constants.DB_QUESTION_TABLE_NEXT_QUESTION_ID];
                         HttpContext.Current.Session[Constants.SESSION_QUESTION_ID] = nextQuestion_id;
                         Response.Redirect("surveyPage.aspx");
                     }
@@ -264,7 +324,7 @@ namespace AITR
         /// <param name="e"></param>
         protected void cancelButton_Click(object sender, EventArgs e)
         {
-            HttpContext.Current.Session[Constants.SESSION_ANSWER] = null;
+            HttpContext.Current.Session[Constants.SESSION_ANSWER_LIST] = null;
             HttpContext.Current.Session[Constants.SESSION_IP] = null;
             HttpContext.Current.Session[Constants.SESSION_DATE] = null;
             HttpContext.Current.Session[Constants.SESSION_QUESTION_ID] = null;
@@ -306,7 +366,16 @@ namespace AITR
         }
 
 
-
+        
+        private static List<String> GetSessionAnswerList()
+        {
+            if(HttpContext.Current.Session[Constants.SESSION_ANSWER_LIST] == null)
+            {
+                List<String> answer_list = new List<String>();
+                HttpContext.Current.Session[Constants.SESSION_ANSWER_LIST] = answer_list;
+            }
+            return (List<String>)HttpContext.Current.Session[Constants.SESSION_ANSWER_LIST];
+        }
 
     }
 }
