@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
@@ -131,7 +132,10 @@ namespace AITR
 
 
                 }
+
+                connection.Close();
             }
+
 
         }
 
@@ -140,7 +144,12 @@ namespace AITR
 
 
         /// <summary>
-        /// 
+        ///  this fuction check for extra questions 
+        ///  store answers in the session
+        ///  redirect to the next questions
+        ///  create the respondent 
+        ///  store answers in the database
+        ///  redirect to register page
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -150,22 +159,72 @@ namespace AITR
             // local variables
             int currentQuestionID = GetQuestionIDFromSession();
             List<int> extraQuestions = new List<int>();
-            List<String> answerList = new List<String>();
 
 
-            // check the session for answers and stores it the local variable 
-            if(GetSessionAnswerList().Count != 0)
-            {
-                answerList.AddRange(GetSessionAnswerList());
-            }
-
-            
-
-
+            // check the session for extra questions and assign it to the local variable
             if (HttpContext.Current.Session[Constants.SESSION_EXTRA_QUESTIONS] != null)
             {
                 extraQuestions = (List<int>)HttpContext.Current.Session[Constants.SESSION_EXTRA_QUESTIONS];
             }
+
+
+            // check the answer for textbox answer 
+            TextBox textBox = (TextBox)answerPlaceHolder.FindControl(Constants.TEXTBOX_ANSWER_ID);
+            // store the textbox answers with option and question id in the session
+            if (textBox != null)
+            {
+                // store the answer in session
+                if (textBox.Text.Length > 0)
+                {
+                    storeAnswerInSession(textBox.Text, HttpContext.Current.Session[Constants.SESSION_TEXTBOX_OPTION_ID].ToString(), HttpContext.Current.Session[Constants.SESSION_QUESTION_ID].ToString());
+
+                }
+
+                // check if there is an extra question id on this option id 
+                checkForExtraQuestion((int)HttpContext.Current.Session[Constants.SESSION_TEXTBOX_OPTION_ID]);
+
+            }
+
+            // check the answer for radiobutton answer 
+            RadioButtonList radioButtonList = (RadioButtonList)answerPlaceHolder.FindControl(Constants.RADIOBUTTONS_ANSWER_ID);
+            // store the radiobutton answers with option and question id in the session
+            if (radioButtonList != null)
+            {
+                foreach (ListItem radioButton in radioButtonList.Items)
+                {
+                    if (radioButton.Selected)
+                    {
+                        //store answer in session
+                        storeAnswerInSession(radioButton.Text, radioButton.Value.ToString(), HttpContext.Current.Session[Constants.SESSION_QUESTION_ID].ToString());
+
+                        checkForExtraQuestion(Int32.Parse(radioButton.Value));
+
+                    }
+                }
+            }
+
+
+            // check the answer for checkBoxList answer 
+            CheckBoxList checkBoxList = (CheckBoxList)answerPlaceHolder.FindControl(Constants.CHECKBOX_ANSWER_ID);
+            // store the checkBoxList answers with option and question id in the session
+            if (checkBoxList != null)
+            {
+                foreach (ListItem checkBox in checkBoxList.Items)
+                {
+                    if (checkBox.Selected)
+                    {
+                        //store answer in session
+                        storeAnswerInSession(checkBox.Text, checkBox.Value.ToString(), HttpContext.Current.Session[Constants.SESSION_QUESTION_ID].ToString());
+
+                        //check the option for extra question
+                        checkForExtraQuestion(Int32.Parse(checkBox.Value));
+                    }
+                }
+
+            }
+
+
+
 
 
             // block of code that runs while there is connection to database
@@ -181,63 +240,16 @@ namespace AITR
                 try
                 {
                     nextQuestionIdReader = getNextQuestionIdCommand.ExecuteReader();
+                   
 
                 }
                 catch (Exception ex)
                 {
                     throw new Exception(ex.Message);
                 }
+                
 
-
-                // check the answer for textbox answer 
-                TextBox textBox = (TextBox)answerPlaceHolder.FindControl(Constants.TEXTBOX_ANSWER_ID);
-                // store the textbox answers with option and question id in the session
-                if (textBox != null)
-                {
-                    String answer = textBox.Text + Constants.SESSION_ANSWER_SEPERATOR + (int)HttpContext.Current.Session[Constants.SESSION_TEXTBOX_OPTION_ID] + Constants.SESSION_ANSWER_SEPERATOR  + (int)HttpContext.Current.Session[Constants.SESSION_QUESTION_ID];
-                    answerList.Add(answer);
-                    HttpContext.Current.Session[Constants.SESSION_ANSWER_LIST] = answerList;
-                    
-                    // check if 
-
-                    
-                }
-
-                // check the answer for radiobutton answer 
-                RadioButtonList radioButtonList = (RadioButtonList)answerPlaceHolder.FindControl(Constants.RADIOBUTTONS_ANSWER_ID);
-                // store the radiobutton answers with option and question id in the session
-                if (radioButtonList != null)
-                {
-                    foreach(ListItem radioButton in radioButtonList.Items)
-                    {
-                        if (radioButton.Selected)
-                        {
-                            String answer = radioButton.Text + Constants.SESSION_ANSWER_SEPERATOR + radioButton.Value + Constants.SESSION_ANSWER_SEPERATOR + (int)HttpContext.Current.Session[Constants.SESSION_QUESTION_ID];
-                            answerList.Add(answer);
-                            HttpContext.Current.Session[Constants.SESSION_ANSWER_LIST] = answerList;
-                        }
-                    }
-                }
-
-                // check the answer for checkBoxList answer 
-                CheckBoxList checkBoxList = (CheckBoxList)answerPlaceHolder.FindControl(Constants.CHECKBOX_ANSWER_ID);
-                // store the checkBoxList answers with option and question id in the session
-                if(checkBoxList != null)
-                {
-                    foreach(ListItem checkBox in checkBoxList.Items)
-                    {
-                        if (checkBox.Selected)
-                        {
-                            String answer = checkBox.Text + Constants.SESSION_ANSWER_SEPERATOR + checkBox.Value + Constants.SESSION_ANSWER_SEPERATOR + (int)HttpContext.Current.Session[Constants.SESSION_QUESTION_ID];
-                            answerList.Add(answer);
-                            HttpContext.Current.Session[Constants.SESSION_ANSWER_LIST] = answerList;
-                        }
-                    }
-
-                }
-
-
-
+                // if the extra question list has items, add the first to the session question id and reload the survey page 
                 if (extraQuestions.Count > 0)
                 {
                     HttpContext.Current.Session[Constants.SESSION_QUESTION_ID] = extraQuestions[0];
@@ -246,74 +258,127 @@ namespace AITR
                     Response.Redirect("surveyPage.aspx");
                 }
 
-
-
                 if (nextQuestionIdReader.Read())
                 {
+                    //check the next question id column for the value , if null finish the survey
                     int nextQuestionIdColumnIndex = nextQuestionIdReader.GetOrdinal(Constants.DB_QUESTION_TABLE_NEXT_QUESTION_ID);
                     if (nextQuestionIdReader.IsDBNull(nextQuestionIdColumnIndex))
                     {
                         //survey is finished
                         //create respondent
+                        createRespondent();
                         //store answers in db
+                        storeAnswersInDatabase();
                         Response.Redirect("registerPage.aspx");
                     }
                     else
                     {
+
+                        // assign the next question id to the session questin id
                         int nextQuestion_id = (int)nextQuestionIdReader[Constants.DB_QUESTION_TABLE_NEXT_QUESTION_ID];
                         HttpContext.Current.Session[Constants.SESSION_QUESTION_ID] = nextQuestion_id;
                         Response.Redirect("surveyPage.aspx");
                     }
                 }
+                connection.Close();
+
             }
 
 
 
-                /*
-                 List<int> extraQuestionsList = new List<int>();
-                int extraQuestionIdIndex;
+        }
+
+        /// <summary>
+        /// check the session for previus answers then add new ones to the list
+        /// </summary>
+        /// <param name="answerText">current answer text</param>
+        /// <param name="optionId">current option id</param>
+        /// <param name="questionId">current question id</param>
+        private static void storeAnswerInSession(String answerText, String optionId, String questionId)
+        {
+
+            List<String> answerList = new List<String>();
+
+            // check the session for answers and stores it the local variable 
+
+            if (HttpContext.Current.Session[Constants.SESSION_ANSWER_LIST] != null)
+            {
+                answerList = (List<String>)HttpContext.Current.Session[Constants.SESSION_ANSWER_LIST];
+            }
 
 
-                // first row of the results, where we have access to next question id & a value for the extra question, possibly null
-                        // we can save the next question id to session here if it exists
-
-                        // check if the next question id has a value or not
-                        int nextQuestionColumnIndex = questionWithOptionsReader.GetOrdinal(Constants.DB_QUESTION_TABLE_NEXT_QUESTION_ID);
-                        if (!questionWithOptionsReader.IsDBNull(nextQuestionColumnIndex))
-                        {
-                            // save the next question id in the session
-                            HttpContext.Current.Session[Constants.SESSION_NEXT_QUESTION_ID] = (int)questionWithOptionsReader[Constants.DB_QUESTION_TABLE_NEXT_QUESTION_ID];
-                        }
-                        else
-                        {
-                            // if there is no value in the reader, set the session to null 
-                            HttpContext.Current.Session[Constants.SESSION_NEXT_QUESTION_ID] = null;
-                        }
+            String answer = answerText + Constants.SESSION_ANSWER_SEPERATOR + optionId + Constants.SESSION_ANSWER_SEPERATOR + questionId;
+            answerList.Add(answer);
+            HttpContext.Current.Session[Constants.SESSION_ANSWER_LIST] = answerList;
 
 
-
-
-                // check if this row of the results has an extra question value, if so add it to the list?
-                                extraQuestionIdIndex = questionWithOptionsReader.GetOrdinal(Constants.DB_OPTION_TABLE_EXTRA_QUESTION_ID);
-                                if (!questionWithOptionsReader.IsDBNull(extraQuestionIdIndex))
-                                {
-                                    int next_question_id = (int)questionWithOptionsReader[Constants.DB_COLUMN_EXTRA_QUESTION_ID];
-
-                                    if (!extraQuestionsList.Contains(next_question_id))
-                                    {
-                                        extraQuestionsList.Add(next_question_id);
-                                    }
-                                }
-
-
-
-                 //store the list of extra questions to the session here?
-                                HttpContext.Current.Session[Constants.SESSION_EXTRA_QUESTIONS] = extraQuestionsList;
-
-                 */
 
         }
 
+
+        /// <summary>
+        /// check the database if the option has an extra question id
+        /// </summary>
+        /// <param name="optionId">option id to check for extra question id<param>
+        private static void checkForExtraQuestion(int optionId)
+        {
+
+
+            
+
+            using (SqlConnection connection = OpenSqlConnection())
+            {
+                SqlCommand getExtraQuestionIdCommand = new SqlCommand(Constants.SQL_QUERY_GET_EXTRA_QUESTION_ID + optionId, connection);
+                SqlDataReader extraQuestionIdReader;
+
+                try
+                {
+                    extraQuestionIdReader = getExtraQuestionIdCommand.ExecuteReader();
+                    if (extraQuestionIdReader.Read())
+                    {
+                        int extraQuestionIdColumnIndex = extraQuestionIdReader.GetOrdinal(Constants.DB_COLUMN_EXTRA_QUESTION_ID);
+                        if (!extraQuestionIdReader.IsDBNull(extraQuestionIdColumnIndex))
+                        {
+                            addExtraQuestionIdToSession((int)extraQuestionIdReader[Constants.DB_COLUMN_EXTRA_QUESTION_ID]);
+                        }
+                    }
+                }
+                catch(Exception e)
+                {
+                    throw new Exception(e.Message);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+               
+            }
+        }
+
+
+
+
+        /// <summary>
+        /// add extra question to session
+        /// </summary>
+        /// <param name="extraQuestionId">extra id to be added</param>
+        private static void addExtraQuestionIdToSession(int extraQuestionId)
+        {
+
+            List<int> extraQuestions = new List<int>();
+
+
+            // check the session for extra questions and assign it to the local variable
+            if (HttpContext.Current.Session[Constants.SESSION_EXTRA_QUESTIONS] != null)
+            {
+                extraQuestions = (List<int>)HttpContext.Current.Session[Constants.SESSION_EXTRA_QUESTIONS];
+            }
+
+            extraQuestions.Add(extraQuestionId);
+            HttpContext.Current.Session[Constants.SESSION_EXTRA_QUESTIONS] = extraQuestions;
+
+        }
 
 
 
@@ -366,15 +431,109 @@ namespace AITR
         }
 
 
-        
-        private static List<String> GetSessionAnswerList()
+
+        /// <summary>
+        /// create an anonymous respondent with values from the session, and store the returned id in the sessio 
+        /// </summary>
+        protected void createRespondent()
         {
-            if(HttpContext.Current.Session[Constants.SESSION_ANSWER_LIST] == null)
+
+
+
+            using (SqlConnection connection = OpenSqlConnection())
             {
-                List<String> answer_list = new List<String>();
-                HttpContext.Current.Session[Constants.SESSION_ANSWER_LIST] = answer_list;
+
+                // create sql commmand for creating a respondent 
+                SqlCommand createRespondent = new SqlCommand(Constants.SQL_QUERY_CREATE_RESPONDENT, connection);
+
+                // create parameter for ip address and assign a value from the session
+                createRespondent.Parameters.Add(Constants.SQL_PARAMETER_IP_ADDRESS, SqlDbType.VarChar, 32);
+                createRespondent.Parameters[Constants.SQL_PARAMETER_IP_ADDRESS].Value = (String)HttpContext.Current.Session[Constants.SESSION_IP]; ;
+
+                // create parameter for date and time and assign a value from the session
+                createRespondent.Parameters.Add(Constants.SQL_PARAMETER_SURVEY_DATE, SqlDbType.Date, 3);
+                createRespondent.Parameters[Constants.SQL_PARAMETER_SURVEY_DATE].Value = (DateTime)HttpContext.Current.Session[Constants.SESSION_DATE];
+
+                try
+                {
+                    int respondent_id = (int) createRespondent.ExecuteScalar();
+                    HttpContext.Current.Session[Constants.SESSION_RESPONDENT] = respondent_id;
+                }
+                catch(Exception e)
+                {
+                    throw new Exception(e.Message);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
             }
-            return (List<String>)HttpContext.Current.Session[Constants.SESSION_ANSWER_LIST];
+
+
+
+       
+        }
+
+
+        /// <summary>
+        /// loop through the answers in the list braek the string into usable parts and store the answers in the database
+        /// </summary>
+        protected void storeAnswersInDatabase()
+        {
+
+            // fetch the list of answers from session
+            List<String> answerList = (List<String>)HttpContext.Current.Session[Constants.SESSION_ANSWER_LIST];
+
+            using(SqlConnection connection = OpenSqlConnection())
+            {
+                // loop through the list 
+                foreach(String answer in answerList)
+                {
+
+                    // break the answer string down into parts to access its data
+                    // seperate the string into three parts : text/value , option id , question id
+                    String[] answerParts = answer.Split(Constants.SESSION_ANSWER_SEPERATOR);
+
+                    String typedAnswer = answerParts[0];
+                    int option_id = Int32.Parse(answerParts[1]);
+                    int question_id = Int32.Parse(answerParts[2]);
+
+
+                    /// create the sql command to insert the answer
+                    SqlCommand insertAnswer = new SqlCommand(Constants.SQL_QUERY_INSERT_ANSWER, connection);
+
+                    insertAnswer.Parameters.Add(Constants.SQL_PARAMETER_TYPED_ANSWER, SqlDbType.Text, 16);
+                    insertAnswer.Parameters[Constants.SQL_PARAMETER_TYPED_ANSWER].Value = typedAnswer;
+
+                    insertAnswer.Parameters.Add(Constants.SQL_PARAMETER_RESPONDENT_ID, SqlDbType.Int, 4);
+                    insertAnswer.Parameters[Constants.SQL_PARAMETER_RESPONDENT_ID].Value = (int)HttpContext.Current.Session[Constants.SESSION_RESPONDENT];
+
+
+                    insertAnswer.Parameters.Add(Constants.SQL_PARAMETER_OPTION_ID, SqlDbType.Int ,4);
+                    insertAnswer.Parameters[Constants.SQL_PARAMETER_OPTION_ID].Value = option_id;
+
+                    insertAnswer.Parameters.Add(Constants.SQL_PARAMETER_QUESTION_ID, SqlDbType.Int, 4);
+                    insertAnswer.Parameters[Constants.SQL_PARAMETER_QUESTION_ID].Value = question_id;
+
+
+
+                    try
+                    {
+                        int rowsAffected = insertAnswer.ExecuteNonQuery();
+                    }
+                    catch(Exception e)
+                    {
+                        throw new Exception(e.Message);
+                    }
+                    
+                    
+
+                    
+                }
+                // close the connection once the function is  finished
+                connection.Close();
+            }
         }
 
     }

@@ -11,7 +11,7 @@ namespace AITR
 
         public const String SESSION_EXTRA_QUESTIONS = "extra_questions";
         public const String SESSION_ANSWER_LIST = "answer_list";
-        public const String SESSION_ANSWER_SEPERATOR = "±";
+        public const char SESSION_ANSWER_SEPERATOR = '±';
         public const String SESSION_TEXTBOX_OPTION_ID = "textbox_option_id";
 
         public const String SESSION_NEXT_QUESTION_ID = "next_question_id";
@@ -32,6 +32,19 @@ namespace AITR
     
         public const String SQL_QUERY_GET_CURRENT_QUESTION_WITH_OPTIONS = "SELECT [question].question_id, [question].text, [question].question_type, [question].next_question_id, [option].option_id, [option].value, [option].extra_question_id FROM [question] INNER JOIN [option] ON [question].question_id = [option].question_id WHERE [question].question_id = ";
         public const String SQL_QUERY_GET_NEXT_QUESTION_ID = "SELECT next_question_id FROM [question] WHERE question_id = ";
+        public const String SQL_QUERY_GET_EXTRA_QUESTION_ID = "SELECT extra_question_id FROM [option] WHERE option_id = ";
+        public const String SQL_QUERY_CREATE_RESPONDENT = "INSERT INTO [respondent] ([ip_address], [date_of_survey]) VALUES (@ip_address, @date_of_survey); SELECT CAST(scope_identity() as int);";
+
+        public const String SQL_PARAMETER_IP_ADDRESS = "@ip_address";
+        public const String SQL_PARAMETER_SURVEY_DATE = "@date_of_survey";
+
+        public const String SQL_QUERY_INSERT_ANSWER = "INSERT INTO [answer] ([typed_answer], [respondent_id], [option_id], [question_id]) VALUES (@typed_answer, @respondent_id, @option_id, @question_id)";
+        public const String SQL_PARAMETER_TYPED_ANSWER = "@typed_answer";
+        public const String SQL_PARAMETER_RESPONDENT_ID = "@respondent_id";
+        public const String SQL_PARAMETER_OPTION_ID = "@option_id";
+        public const String SQL_PARAMETER_QUESTION_ID = "@question_id";
+
+
 
 
         public const String DB_QUESTION_TABLE_TEXT = "text";
