@@ -7,6 +7,28 @@
     <div class="container">
         <asp:Label ID="registerPageLabel" runat="server" Text="Register Page"></asp:Label>
         <br />
-        <asp:PlaceHolder ID="AnswerList" runat="server"></asp:PlaceHolder>
+        <br />
+        <asp:TextBox class="textBox" ID="firstName" runat="server" placeholder="first name"></asp:TextBox>
+        <br />
+        <br />
+        <asp:TextBox class="textBox" ID="lasttName" runat="server" placeholder="last name"></asp:TextBox>
+        <br />
+        <br />
+        <asp:TextBox class="textBox" ID="dob" runat="server" placeholder="date of birth"></asp:TextBox>
+        <br />
+        <asp:Calendar ID="Calendar1" runat="server"></asp:Calendar>
+        <br />
+        <br />
+        <asp:TextBox class="textBox" ID="phoneNumber" runat="server" placeholder="phone number"></asp:TextBox>
+        <br />
+        <br />
+        <asp:TextBox class="textBox" ID="email" runat="server" placeholder="email"></asp:TextBox>
+        <br />
+        <br />
+        <asp:Button ID="register" runat="server" Text="Register" />
+        
+        <br />
+        <asp:Button ID="cancel" runat="server" Text="Cancel" />
+        <br />
     </div>
 </asp:Content>

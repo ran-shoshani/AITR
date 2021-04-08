@@ -44,6 +44,7 @@ namespace AITR
         public const String SQL_PARAMETER_OPTION_ID = "@option_id";
         public const String SQL_PARAMETER_QUESTION_ID = "@question_id";
 
+        public const String SQL_QUERY_GET_FIRST_QUESTION = "SELECT TOP 1 * FROM [question] ORDER BY question_id ASC; SELECT CAST(scope_identity() as int);";
 
 
 

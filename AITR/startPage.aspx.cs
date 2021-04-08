@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -11,7 +13,23 @@ namespace AITR
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            using(SqlConnection connection = OpenSqlConnection())
+            {
 
+                SqlCommand getFirstQuestion = new SqlCommand(Constants.SQL_QUERY_GET_FIRST_QUESTION, connection);
+
+                try
+                {
+                    int firstQuestionId = (int)getFirstQuestion.ExecuteScalar();
+                    HttpContext.Current.Session[Constants.SESSION_QUESTION_ID] = firstQuestionId;
+                }
+                catch(Exception ex)
+                {
+                    //redirect to a error page
+                    Response.Redirect("errorPage.aspx");
+
+                }
+            } 
         }
 
         protected void startSurveyButton_Click(object sender, EventArgs e)
@@ -94,7 +112,17 @@ namespace AITR
             }
             return ipAddress;
         }
+        /// <summary>
+        /// setup new connection to database 
+        /// </summary>
+        /// <returns>open sql connection</returns>
+        private static SqlConnection OpenSqlConnection()
+        {
+            String connectionString = ConfigurationManager.ConnectionStrings[Constants.DB_CONNECTION_STRING].ConnectionString;
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            connection.Open();
+            return connection;
+        }
     }
-
-
 }

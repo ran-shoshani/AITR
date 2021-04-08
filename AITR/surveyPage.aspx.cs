@@ -17,9 +17,11 @@ namespace AITR
         protected void Page_Load(object sender, EventArgs e)
         {
 
-            int currentQuestionID = GetQuestionIDFromSession();
-            
+            //assign the current question id from the session to a local variable so that the correct question can be fetched from the database
+            int currentQuestionID = (int)HttpContext.Current.Session[Constants.SESSION_QUESTION_ID];
 
+            Console.Error.WriteLine("current questio id : ", currentQuestionID);
+            Console.WriteLine("current questio id : ", currentQuestionID);
             // block of code that runs while there is connection to database
             using (SqlConnection connection = OpenSqlConnection())
             {
@@ -36,6 +38,7 @@ namespace AITR
                 }
                 catch (Exception ex)
                 {
+                    Response.Redirect("errorPage.aspx");
                     throw new Exception(ex.Message);
                 }
 
@@ -157,7 +160,7 @@ namespace AITR
         {
 
             // local variables
-            int currentQuestionID = GetQuestionIDFromSession();
+            int currentQuestionID = (int)HttpContext.Current.Session[Constants.SESSION_QUESTION_ID];
             List<int> extraQuestions = new List<int>();
 
 
@@ -245,6 +248,7 @@ namespace AITR
                 }
                 catch (Exception ex)
                 {
+                    Response.Redirect("errorPage.aspx");
                     throw new Exception(ex.Message);
                 }
                 
@@ -256,6 +260,7 @@ namespace AITR
                     extraQuestions.RemoveAt(0);
                     HttpContext.Current.Session[Constants.SESSION_EXTRA_QUESTIONS] = extraQuestions;
                     Response.Redirect("surveyPage.aspx");
+                    return;
                 }
 
                 if (nextQuestionIdReader.Read())
@@ -306,7 +311,6 @@ namespace AITR
                 answerList = (List<String>)HttpContext.Current.Session[Constants.SESSION_ANSWER_LIST];
             }
 
-
             String answer = answerText + Constants.SESSION_ANSWER_SEPERATOR + optionId + Constants.SESSION_ANSWER_SEPERATOR + questionId;
             answerList.Add(answer);
             HttpContext.Current.Session[Constants.SESSION_ANSWER_LIST] = answerList;
@@ -325,26 +329,32 @@ namespace AITR
 
 
             
-
+            
             using (SqlConnection connection = OpenSqlConnection())
             {
+                // build command to get extra question id
                 SqlCommand getExtraQuestionIdCommand = new SqlCommand(Constants.SQL_QUERY_GET_EXTRA_QUESTION_ID + optionId, connection);
                 SqlDataReader extraQuestionIdReader;
 
                 try
                 {
+                    // execute command
                     extraQuestionIdReader = getExtraQuestionIdCommand.ExecuteReader();
+
+                    // read the row and check if it is null or not
                     if (extraQuestionIdReader.Read())
                     {
                         int extraQuestionIdColumnIndex = extraQuestionIdReader.GetOrdinal(Constants.DB_COLUMN_EXTRA_QUESTION_ID);
                         if (!extraQuestionIdReader.IsDBNull(extraQuestionIdColumnIndex))
                         {
+                            // add the extra question id to the session
                             addExtraQuestionIdToSession((int)extraQuestionIdReader[Constants.DB_COLUMN_EXTRA_QUESTION_ID]);
                         }
                     }
                 }
                 catch(Exception e)
                 {
+
                     throw new Exception(e.Message);
                 }
                 finally
@@ -367,7 +377,6 @@ namespace AITR
         {
 
             List<int> extraQuestions = new List<int>();
-
 
             // check the session for extra questions and assign it to the local variable
             if (HttpContext.Current.Session[Constants.SESSION_EXTRA_QUESTIONS] != null)
@@ -393,6 +402,7 @@ namespace AITR
             HttpContext.Current.Session[Constants.SESSION_IP] = null;
             HttpContext.Current.Session[Constants.SESSION_DATE] = null;
             HttpContext.Current.Session[Constants.SESSION_QUESTION_ID] = null;
+            HttpContext.Current.Session[Constants.SESSION_EXTRA_QUESTIONS] = null;
             HttpContext.Current.Session[Constants.DB_COLUMN_EXTRA_QUESTION_ID]= null;
             HttpContext.Current.Session[Constants.DB_COLUMN_NEXT_QUESTION_ID] = null;
             Response.Redirect("startPage.aspx");
@@ -409,26 +419,12 @@ namespace AITR
             String connectionString = ConfigurationManager.ConnectionStrings[Constants.DB_CONNECTION_STRING].ConnectionString;
 
             SqlConnection connection = new SqlConnection(connectionString);
+           
+            
             connection.Open();
             return connection;
         }
 
-
-
-
-        /// <summary>
-        /// gets the question id from the session
-        /// </summary>
-        /// <returns>question id as integer</returns>
-        private static int GetQuestionIDFromSession()
-        {
-            if(HttpContext.Current.Session[Constants.SESSION_QUESTION_ID] == null)
-            {
-                HttpContext.Current.Session[Constants.SESSION_QUESTION_ID] = 1;
-            }
-
-            return (int)HttpContext.Current.Session[Constants.SESSION_QUESTION_ID];
-        }
 
 
 
@@ -517,7 +513,7 @@ namespace AITR
                     insertAnswer.Parameters[Constants.SQL_PARAMETER_QUESTION_ID].Value = question_id;
 
 
-
+                    // execute command to store the answer row in the database 
                     try
                     {
                         int rowsAffected = insertAnswer.ExecuteNonQuery();
