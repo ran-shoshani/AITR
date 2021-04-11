@@ -171,68 +171,163 @@ namespace AITR
             }
 
 
-            // check the answer for textbox answer 
-            TextBox textBox = (TextBox)answerPlaceHolder.FindControl(Constants.TEXTBOX_ANSWER_ID);
-            // store the textbox answers with option and question id in the session
-            if (textBox != null)
-            {
-                // store the answer in session
-                if (textBox.Text.Length > 0)
-                {
-                    storeAnswerInSession(textBox.Text, HttpContext.Current.Session[Constants.SESSION_TEXTBOX_OPTION_ID].ToString(), HttpContext.Current.Session[Constants.SESSION_QUESTION_ID].ToString());
-
-                }
-
-                // check if there is an extra question id on this option id 
-                checkForExtraQuestion((int)HttpContext.Current.Session[Constants.SESSION_TEXTBOX_OPTION_ID]);
-
-            }
-
-            // check the answer for radiobutton answer 
-            RadioButtonList radioButtonList = (RadioButtonList)answerPlaceHolder.FindControl(Constants.RADIOBUTTONS_ANSWER_ID);
-            // store the radiobutton answers with option and question id in the session
-            if (radioButtonList != null)
-            {
-                foreach (ListItem radioButton in radioButtonList.Items)
-                {
-                    if (radioButton.Selected)
-                    {
-                        //store answer in session
-                        storeAnswerInSession(radioButton.Text, radioButton.Value.ToString(), HttpContext.Current.Session[Constants.SESSION_QUESTION_ID].ToString());
-
-                        checkForExtraQuestion(Int32.Parse(radioButton.Value));
-
-                    }
-                }
-            }
-
-
-            // check the answer for checkBoxList answer 
-            CheckBoxList checkBoxList = (CheckBoxList)answerPlaceHolder.FindControl(Constants.CHECKBOX_ANSWER_ID);
-            // store the checkBoxList answers with option and question id in the session
-            if (checkBoxList != null)
-            {
-                foreach (ListItem checkBox in checkBoxList.Items)
-                {
-                    if (checkBox.Selected)
-                    {
-                        //store answer in session
-                        storeAnswerInSession(checkBox.Text, checkBox.Value.ToString(), HttpContext.Current.Session[Constants.SESSION_QUESTION_ID].ToString());
-
-                        //check the option for extra question
-                        checkForExtraQuestion(Int32.Parse(checkBox.Value));
-                    }
-                }
-
-            }
-
-
-
-
 
             // block of code that runs while there is connection to database
             using (SqlConnection connection = OpenSqlConnection())
             {
+
+                // check the answer for textbox answer 
+                TextBox textBox = (TextBox)answerPlaceHolder.FindControl(Constants.TEXTBOX_ANSWER_ID);
+                // store the textbox answers with option and question id in the session
+                if (textBox != null)
+                {
+                    // store the answer in session
+                    if (textBox.Text.Length > 0)
+                    {
+                        storeAnswerInSession(textBox.Text, HttpContext.Current.Session[Constants.SESSION_TEXTBOX_OPTION_ID].ToString(), HttpContext.Current.Session[Constants.SESSION_QUESTION_ID].ToString());
+
+                    }
+
+
+
+                    // check if there is an extra question id on this option id 
+                    // build command to get extra question id
+                    SqlCommand getExtraQuestionIdCommand = new SqlCommand(Constants.SQL_QUERY_GET_EXTRA_QUESTION_ID + (int)HttpContext.Current.Session[Constants.SESSION_TEXTBOX_OPTION_ID], connection);
+                    SqlDataReader extraQuestionIdReader;
+
+                    
+
+                    try
+                    {
+                        // execute command
+                        extraQuestionIdReader = getExtraQuestionIdCommand.ExecuteReader();
+
+                        // read the row and check if it is null or not
+                        if (extraQuestionIdReader.Read())
+                        {
+                            int extraQuestionIdColumnIndex = extraQuestionIdReader.GetOrdinal(Constants.DB_COLUMN_EXTRA_QUESTION_ID);
+                            if (!extraQuestionIdReader.IsDBNull(extraQuestionIdColumnIndex))
+                            {
+                                
+
+                                if (!extraQuestions.Contains((int)extraQuestionIdReader[Constants.DB_COLUMN_EXTRA_QUESTION_ID]))
+                                {
+                                    // add the extra question id to the session
+
+                                    extraQuestions.Add((int)extraQuestionIdReader[Constants.DB_COLUMN_EXTRA_QUESTION_ID]);
+                                    HttpContext.Current.Session[Constants.SESSION_EXTRA_QUESTIONS] = extraQuestions;
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Response.Redirect("errorPage.aspx");
+                        throw new Exception(ex.Message);
+                    }
+                    
+                }
+
+
+                // check the answer for radiobutton answer 
+                RadioButtonList radioButtonList = (RadioButtonList)answerPlaceHolder.FindControl(Constants.RADIOBUTTONS_ANSWER_ID);
+                // store the radiobutton answers with option and question id in the session
+                if (radioButtonList != null)
+                {
+                    foreach (ListItem radioButton in radioButtonList.Items)
+                    {
+                        if (radioButton.Selected)
+                        {
+                            //store answer in session
+                            storeAnswerInSession(radioButton.Text, radioButton.Value.ToString(), HttpContext.Current.Session[Constants.SESSION_QUESTION_ID].ToString());
+
+
+                            // check if there is an extra question id on this option id 
+                            // build command to get extra question id
+                            SqlCommand getExtraQuestionIdCommand = new SqlCommand(Constants.SQL_QUERY_GET_EXTRA_QUESTION_ID + Int32.Parse(radioButton.Value), connection);
+                            SqlDataReader extraQuestionIdReader;
+
+
+
+                            try
+                            {
+                                // execute command
+                                extraQuestionIdReader = getExtraQuestionIdCommand.ExecuteReader();
+
+                                // read the row and check if it is null or not
+                                if (extraQuestionIdReader.Read())
+                                {
+                                    int extraQuestionIdColumnIndex = extraQuestionIdReader.GetOrdinal(Constants.DB_COLUMN_EXTRA_QUESTION_ID);
+                                    if (!extraQuestionIdReader.IsDBNull(extraQuestionIdColumnIndex))
+                                    {
+
+                                        if (!extraQuestions.Contains((int)extraQuestionIdReader[Constants.DB_COLUMN_EXTRA_QUESTION_ID]))
+                                        {
+                                            // add the extra question id to the session
+
+                                            extraQuestions.Add((int)extraQuestionIdReader[Constants.DB_COLUMN_EXTRA_QUESTION_ID]);
+                                            HttpContext.Current.Session[Constants.SESSION_EXTRA_QUESTIONS] = extraQuestions;
+                                        }
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Response.Redirect("errorPage.aspx");
+                                throw new Exception(ex.Message);
+                            }
+                        }
+                    }
+                }
+
+                // check the answer for checkBoxList answer 
+                CheckBoxList checkBoxList = (CheckBoxList)answerPlaceHolder.FindControl(Constants.CHECKBOX_ANSWER_ID);
+                // store the checkBoxList answers with option and question id in the session
+                if (checkBoxList != null)
+                {
+                    foreach (ListItem checkBox in checkBoxList.Items)
+                    {
+                        if (checkBox.Selected)
+                        {
+                            //store answer in session
+                            storeAnswerInSession(checkBox.Text, checkBox.Value.ToString(), HttpContext.Current.Session[Constants.SESSION_QUESTION_ID].ToString());
+                            
+
+                            // check if there is an extra question id on this option id 
+                            // build command to get extra question id
+                            SqlCommand getExtraQuestionIdCommand = new SqlCommand(Constants.SQL_QUERY_GET_EXTRA_QUESTION_ID + Int32.Parse(checkBox.Value), connection);
+                            SqlDataReader extraQuestionIdReader;
+
+
+
+                            try
+                            {
+                                // execute command
+                                extraQuestionIdReader = getExtraQuestionIdCommand.ExecuteReader();
+
+                                // read the row and check if it is null or not
+                                if (extraQuestionIdReader.Read())
+                                {
+                                    int extraQuestionIdColumnIndex = extraQuestionIdReader.GetOrdinal(Constants.DB_COLUMN_EXTRA_QUESTION_ID);
+                                    if (!extraQuestionIdReader.IsDBNull(extraQuestionIdColumnIndex))
+                                    {
+                                        // add the extra question id to the session
+                                        addExtraQuestionIdToSession((int)extraQuestionIdReader[Constants.DB_COLUMN_EXTRA_QUESTION_ID]);
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Response.Redirect("errorPage.aspx");
+                                throw new Exception(ex.Message);
+                            }
+
+
+                        }
+                    }
+
+                }
+
 
                 // build sql command to fetch next question 
                 //

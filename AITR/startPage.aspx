@@ -14,7 +14,7 @@
         <div class="loginContainer">
             <asp:Label ID="staffLoginLabel" runat="server" Text="Staff Login"></asp:Label>
             <asp:TextBox ID="userNameTextBox" runat="server"></asp:TextBox>
-            <asp:TextBox ID="userPasswordTextBox" runat="server"></asp:TextBox>
+            <asp:TextBox ID="userPasswordTextBox" runat="server" TextMode="Password"></asp:TextBox>
             <asp:Button ID="loginButton" runat="server" Text="Login" OnClick="loginButton_Click" />
         </div>
     </div>

@@ -46,6 +46,12 @@ namespace AITR
 
         public const String SQL_QUERY_GET_FIRST_QUESTION = "SELECT TOP 1 * FROM [question] ORDER BY question_id ASC; SELECT CAST(scope_identity() as int);";
 
+        public const String SQL_QUERY_SIGN_IN = "SELECT * FROM staff WHERE user_name = @user_name AND password = @password";
+        public const String SQL_PARAMETER_USER_NAME = "@user_name";
+        public const String SQL_PARAMETER_PASSWORD = "@password";
+        public const String SESSION_AUTH = "signed_in";
+        
+
 
 
         public const String DB_QUESTION_TABLE_TEXT = "text";

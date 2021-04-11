@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
@@ -13,7 +14,11 @@ namespace AITR
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            using(SqlConnection connection = OpenSqlConnection())
+
+            HttpContext.Current.Session[Constants.SESSION_AUTH] = false;
+
+
+            using (SqlConnection connection = OpenSqlConnection())
             {
 
                 SqlCommand getFirstQuestion = new SqlCommand(Constants.SQL_QUERY_GET_FIRST_QUESTION, connection);
@@ -49,8 +54,20 @@ namespace AITR
 
         }
 
+
+
         protected void loginButton_Click(object sender, EventArgs e)
         {
+            
+            if (signIn())
+            {
+                Response.Redirect("staffPage.aspx");
+            }
+          
+             
+                
+            
+
 
         }
 
@@ -124,5 +141,56 @@ namespace AITR
             connection.Open();
             return connection;
         }
+
+
+
+
+        /// <summary>
+        /// contacts the database checks the login parameters
+        /// </summary>
+        /// <returns> true if match  , false if not </returns>
+        protected Boolean signIn()
+        {
+            using (SqlConnection connection = OpenSqlConnection())
+            {
+                SqlCommand login = new SqlCommand(Constants.SQL_QUERY_SIGN_IN, connection);
+
+                login.Parameters.Add(Constants.SQL_PARAMETER_USER_NAME, SqlDbType.VarChar, 256);
+                login.Parameters[Constants.SQL_PARAMETER_USER_NAME].Value = userNameTextBox.Text;
+
+                login.Parameters.Add(Constants.SQL_PARAMETER_PASSWORD, SqlDbType.VarChar, 256);
+                login.Parameters[Constants.SQL_PARAMETER_PASSWORD].Value = userPasswordTextBox.Text;
+
+
+                try
+                {
+
+
+                    SqlDataReader loginReader = login.ExecuteReader();
+                    if (loginReader.HasRows)
+                    {
+                       HttpContext.Current.Session[Constants.SESSION_AUTH] = true;
+                        return true;
+                    }
+                    else
+                    {
+                        userNameTextBox.Text = null;
+                        userPasswordTextBox.Text = null;
+                        return false;
+                    }
+
+                }
+                catch(Exception ex)
+                {
+                    Response.Redirect("errorpage.aspx");
+                    throw new Exception(ex.Message);
+                }
+
+            }
+        }
+
+
     }
+
+
 }

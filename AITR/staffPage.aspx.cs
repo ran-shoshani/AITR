@@ -12,6 +12,11 @@ namespace AITR
         protected void Page_Load(object sender, EventArgs e)
         {
 
+            if ((bool)HttpContext.Current.Session[Constants.SESSION_AUTH] == false)
+            {
+                Response.Redirect("errorPage.aspx");
+            }
+
         }
     }
 }
