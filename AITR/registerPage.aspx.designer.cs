@@ -24,6 +24,15 @@ namespace AITR
         protected global::System.Web.UI.WebControls.Label registerPageLabel;
 
         /// <summary>
+        /// messageLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label messageLabel;
+
+        /// <summary>
         /// firstName control.
         /// </summary>
         /// <remarks>
@@ -33,13 +42,13 @@ namespace AITR
         protected global::System.Web.UI.WebControls.TextBox firstName;
 
         /// <summary>
-        /// lasttName control.
+        /// lastName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox lasttName;
+        protected global::System.Web.UI.WebControls.TextBox lastName;
 
         /// <summary>
         /// dob control.
@@ -49,15 +58,6 @@ namespace AITR
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox dob;
-
-        /// <summary>
-        /// Calendar1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Calendar Calendar1;
 
         /// <summary>
         /// phoneNumber control.

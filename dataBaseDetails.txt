@@ -1,0 +1,14 @@
+
+
+Data Source=SQL5102.site4now.net
+Initial Catalog=DB_A6FB61_121DDA6369
+User Id=DB_A6FB61_121DDA6369_admin
+Password=Sv4V2eaQ
+
+Microsoft SQL Server Web Portal click HERE https://mssql.site4now.net/default.asp
+
+
+
+userName: admin
+password: admin99
+

@@ -55,7 +55,7 @@ namespace AITR
                     String question_type = questionWithOptionsReader[Constants.DB_QUESTION_TABLE_QUESTION_TYPE].ToString();
 
 
-                    
+
 
 
 
@@ -85,7 +85,7 @@ namespace AITR
                             ListItem radioButtonOption = new ListItem(questionWithOptionsReader[Constants.DB_OPTION_TABLE_VALUE].ToString(), questionWithOptionsReader[Constants.DB_OPTION_TABLE_OPTION_ID].ToString());
                             radioButtonList.Items.Add(radioButtonOption);
 
-                            
+
 
                             // then loop through the rest data create a radio button for each option
                             while (questionWithOptionsReader.Read())
@@ -94,14 +94,14 @@ namespace AITR
                                 radioButtonOption = new ListItem(questionWithOptionsReader[Constants.DB_OPTION_TABLE_VALUE].ToString(), questionWithOptionsReader[Constants.DB_OPTION_TABLE_OPTION_ID].ToString());
                                 radioButtonList.Items.Add(radioButtonOption);
 
-                                
+
 
                             }
 
                             // put the radio button list in the placeholder for the answers
                             answerPlaceHolder.Controls.Add(radioButtonList);
 
-                           
+
                             break;
 
                         case Constants.MULTIPLE_CHOICE_QUESTION:
@@ -114,7 +114,7 @@ namespace AITR
                             ListItem checkboxOption = new ListItem(questionWithOptionsReader[Constants.DB_OPTION_TABLE_VALUE].ToString(), questionWithOptionsReader[Constants.DB_OPTION_TABLE_OPTION_ID].ToString());
                             checkBoxList.Items.Add(checkboxOption);
 
-                            
+
 
                             // then loop through the rest data create a checkbox for each option
                             while (questionWithOptionsReader.Read())
@@ -123,12 +123,12 @@ namespace AITR
                                 checkboxOption = new ListItem(questionWithOptionsReader[Constants.DB_OPTION_TABLE_VALUE].ToString(), questionWithOptionsReader[Constants.DB_OPTION_TABLE_OPTION_ID].ToString());
                                 checkBoxList.Items.Add(checkboxOption);
 
-                                
+
                             }
                             // put the checkbox list in the placeholder for the answers
                             answerPlaceHolder.Controls.Add(checkBoxList);
 
-                           
+
                             break;
                     }
 
@@ -195,7 +195,7 @@ namespace AITR
                     SqlCommand getExtraQuestionIdCommand = new SqlCommand(Constants.SQL_QUERY_GET_EXTRA_QUESTION_ID + (int)HttpContext.Current.Session[Constants.SESSION_TEXTBOX_OPTION_ID], connection);
                     SqlDataReader extraQuestionIdReader;
 
-                    
+
 
                     try
                     {
@@ -208,7 +208,7 @@ namespace AITR
                             int extraQuestionIdColumnIndex = extraQuestionIdReader.GetOrdinal(Constants.DB_COLUMN_EXTRA_QUESTION_ID);
                             if (!extraQuestionIdReader.IsDBNull(extraQuestionIdColumnIndex))
                             {
-                                
+
 
                                 if (!extraQuestions.Contains((int)extraQuestionIdReader[Constants.DB_COLUMN_EXTRA_QUESTION_ID]))
                                 {
@@ -225,7 +225,7 @@ namespace AITR
                         Response.Redirect("errorPage.aspx");
                         throw new Exception(ex.Message);
                     }
-                    
+
                 }
 
 
@@ -291,7 +291,7 @@ namespace AITR
                         {
                             //store answer in session
                             storeAnswerInSession(checkBox.Text, checkBox.Value.ToString(), HttpContext.Current.Session[Constants.SESSION_QUESTION_ID].ToString());
-                            
+
 
                             // check if there is an extra question id on this option id 
                             // build command to get extra question id
@@ -338,7 +338,7 @@ namespace AITR
                 try
                 {
                     nextQuestionIdReader = getNextQuestionIdCommand.ExecuteReader();
-                   
+
 
                 }
                 catch (Exception ex)
@@ -346,7 +346,7 @@ namespace AITR
                     Response.Redirect("errorPage.aspx");
                     throw new Exception(ex.Message);
                 }
-                
+
 
                 // if the extra question list has items, add the first to the session question id and reload the survey page 
                 if (extraQuestions.Count > 0)
@@ -423,8 +423,8 @@ namespace AITR
         {
 
 
-            
-            
+
+
             using (SqlConnection connection = OpenSqlConnection())
             {
                 // build command to get extra question id
@@ -447,7 +447,7 @@ namespace AITR
                         }
                     }
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
 
                     throw new Exception(e.Message);
@@ -457,7 +457,7 @@ namespace AITR
                     connection.Close();
                 }
 
-               
+
             }
         }
 
@@ -498,7 +498,7 @@ namespace AITR
             HttpContext.Current.Session[Constants.SESSION_DATE] = null;
             HttpContext.Current.Session[Constants.SESSION_QUESTION_ID] = null;
             HttpContext.Current.Session[Constants.SESSION_EXTRA_QUESTIONS] = null;
-            HttpContext.Current.Session[Constants.DB_COLUMN_EXTRA_QUESTION_ID]= null;
+            HttpContext.Current.Session[Constants.DB_COLUMN_EXTRA_QUESTION_ID] = null;
             HttpContext.Current.Session[Constants.DB_COLUMN_NEXT_QUESTION_ID] = null;
             Response.Redirect("startPage.aspx");
         }
@@ -514,8 +514,8 @@ namespace AITR
             String connectionString = ConfigurationManager.ConnectionStrings[Constants.DB_CONNECTION_STRING].ConnectionString;
 
             SqlConnection connection = new SqlConnection(connectionString);
-           
-            
+
+
             connection.Open();
             return connection;
         }
@@ -547,10 +547,10 @@ namespace AITR
 
                 try
                 {
-                    int respondent_id = (int) createRespondent.ExecuteScalar();
+                    int respondent_id = (int)createRespondent.ExecuteScalar();
                     HttpContext.Current.Session[Constants.SESSION_RESPONDENT] = respondent_id;
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     throw new Exception(e.Message);
                 }
@@ -563,7 +563,7 @@ namespace AITR
 
 
 
-       
+
         }
 
 
@@ -576,52 +576,60 @@ namespace AITR
             // fetch the list of answers from session
             List<String> answerList = (List<String>)HttpContext.Current.Session[Constants.SESSION_ANSWER_LIST];
 
-            using(SqlConnection connection = OpenSqlConnection())
+            using (SqlConnection connection = OpenSqlConnection())
             {
-                // loop through the list 
-                foreach(String answer in answerList)
+
+                if (answerList != null)
                 {
-
-                    // break the answer string down into parts to access its data
-                    // seperate the string into three parts : text/value , option id , question id
-                    String[] answerParts = answer.Split(Constants.SESSION_ANSWER_SEPERATOR);
-
-                    String typedAnswer = answerParts[0];
-                    int option_id = Int32.Parse(answerParts[1]);
-                    int question_id = Int32.Parse(answerParts[2]);
-
-
-                    /// create the sql command to insert the answer
-                    SqlCommand insertAnswer = new SqlCommand(Constants.SQL_QUERY_INSERT_ANSWER, connection);
-
-                    insertAnswer.Parameters.Add(Constants.SQL_PARAMETER_TYPED_ANSWER, SqlDbType.Text, 16);
-                    insertAnswer.Parameters[Constants.SQL_PARAMETER_TYPED_ANSWER].Value = typedAnswer;
-
-                    insertAnswer.Parameters.Add(Constants.SQL_PARAMETER_RESPONDENT_ID, SqlDbType.Int, 4);
-                    insertAnswer.Parameters[Constants.SQL_PARAMETER_RESPONDENT_ID].Value = (int)HttpContext.Current.Session[Constants.SESSION_RESPONDENT];
-
-
-                    insertAnswer.Parameters.Add(Constants.SQL_PARAMETER_OPTION_ID, SqlDbType.Int ,4);
-                    insertAnswer.Parameters[Constants.SQL_PARAMETER_OPTION_ID].Value = option_id;
-
-                    insertAnswer.Parameters.Add(Constants.SQL_PARAMETER_QUESTION_ID, SqlDbType.Int, 4);
-                    insertAnswer.Parameters[Constants.SQL_PARAMETER_QUESTION_ID].Value = question_id;
-
-
-                    // execute command to store the answer row in the database 
-                    try
+                    // loop through the list 
+                    foreach (String answer in answerList)
                     {
-                        int rowsAffected = insertAnswer.ExecuteNonQuery();
-                    }
-                    catch(Exception e)
-                    {
-                        throw new Exception(e.Message);
-                    }
-                    
-                    
 
-                    
+                        // break the answer string down into parts to access its data
+                        // seperate the string into three parts : text/value , option id , question id
+                        String[] answerParts = answer.Split(Constants.SESSION_ANSWER_SEPERATOR);
+
+                        String typedAnswer = answerParts[0];
+                        int option_id = Int32.Parse(answerParts[1]);
+                        int question_id = Int32.Parse(answerParts[2]);
+
+
+                        /// create the sql command to insert the answer
+                        SqlCommand insertAnswer = new SqlCommand(Constants.SQL_QUERY_INSERT_ANSWER, connection);
+
+                        insertAnswer.Parameters.Add(Constants.SQL_PARAMETER_TYPED_ANSWER, SqlDbType.Text, 16);
+                        insertAnswer.Parameters[Constants.SQL_PARAMETER_TYPED_ANSWER].Value = typedAnswer;
+
+                        insertAnswer.Parameters.Add(Constants.SQL_PARAMETER_RESPONDENT_ID, SqlDbType.Int, 4);
+                        insertAnswer.Parameters[Constants.SQL_PARAMETER_RESPONDENT_ID].Value = (int)HttpContext.Current.Session[Constants.SESSION_RESPONDENT];
+
+
+                        insertAnswer.Parameters.Add(Constants.SQL_PARAMETER_OPTION_ID, SqlDbType.Int, 4);
+                        insertAnswer.Parameters[Constants.SQL_PARAMETER_OPTION_ID].Value = option_id;
+
+                        insertAnswer.Parameters.Add(Constants.SQL_PARAMETER_QUESTION_ID, SqlDbType.Int, 4);
+                        insertAnswer.Parameters[Constants.SQL_PARAMETER_QUESTION_ID].Value = question_id;
+
+
+                        // execute command to store the answer row in the database 
+                        try
+                        {
+                            int rowsAffected = insertAnswer.ExecuteNonQuery();
+                        }
+                        catch (Exception e)
+                        {
+                            throw new Exception(e.Message);
+                        }
+
+
+
+
+                    }
                 }
+
+
+
+
                 // close the connection once the function is  finished
                 connection.Close();
             }

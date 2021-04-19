@@ -46,12 +46,20 @@ namespace AITR
 
         public const String SQL_QUERY_GET_FIRST_QUESTION = "SELECT TOP 1 * FROM [question] ORDER BY question_id ASC; SELECT CAST(scope_identity() as int);";
 
+        // signin page
         public const String SQL_QUERY_SIGN_IN = "SELECT * FROM staff WHERE user_name = @user_name AND password = @password";
         public const String SQL_PARAMETER_USER_NAME = "@user_name";
         public const String SQL_PARAMETER_PASSWORD = "@password";
         public const String SESSION_AUTH = "signed_in";
-        
 
+
+        //  register page constants
+        public const String SQL_QUERY_USER_REGISTER = "UPDATE [respondent] SET [first_name] = @first_name, [last_name] = @last_name, [phone_number] = @phone_number , [date_of_birth] = @date_of_birth, [email] = @email, [is_registered] = 1 WHERE [respondent_id] = @respondent_id ";
+        public const String SQL_PARAMETER_FIRST_NAME = "@first_name";
+        public const String SQL_PARAMETER_LAST_NAME = "@last_name";
+        public const String SQL_PARAMETER_PHONE_NUMBER = "@phone_number";
+        public const String SQL_PARAMETER_EMAIL = "@email";
+        public const String SQL_PARAMETER_DOB = "@date_of_birth";
 
 
         public const String DB_QUESTION_TABLE_TEXT = "text";

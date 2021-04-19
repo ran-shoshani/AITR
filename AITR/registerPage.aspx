@@ -7,28 +7,32 @@
     <div class="container">
         <asp:Label ID="registerPageLabel" runat="server" Text="Register Page"></asp:Label>
         <br />
+        <asp:Label ID="messageLabel" runat="server" Text="" Visible="False" ></asp:Label>
         <br />
         <asp:TextBox class="textBox" ID="firstName" runat="server" placeholder="first name"></asp:TextBox>
         <br />
         <br />
-        <asp:TextBox class="textBox" ID="lasttName" runat="server" placeholder="last name"></asp:TextBox>
+        <asp:TextBox class="textBox" ID="lastName" runat="server" placeholder="last name"></asp:TextBox>
         <br />
         <br />
-        <asp:TextBox class="textBox" ID="dob" runat="server" placeholder="date of birth"></asp:TextBox>
-        <br />
-        <asp:Calendar ID="Calendar1" runat="server"></asp:Calendar>
+        <asp:TextBox class="textBox" ID="dob" runat="server" placeholder="mm/dd/yyyy" TextMode="Date"></asp:TextBox>
         <br />
         <br />
-        <asp:TextBox class="textBox" ID="phoneNumber" runat="server" placeholder="phone number"></asp:TextBox>
+        <br />
+        <asp:TextBox class="textBox" ID="phoneNumber" runat="server" placeholder="phone number" TextMode="Phone"></asp:TextBox>
         <br />
         <br />
-        <asp:TextBox class="textBox" ID="email" runat="server" placeholder="email"></asp:TextBox>
+        <asp:TextBox class="textBox" ID="email" runat="server" placeholder="email" TextMode="Email"></asp:TextBox>
         <br />
+
         <br />
-        <asp:Button ID="register" runat="server" Text="Register" />
+        <asp:Button ID="register" runat="server" Text="Register" OnClick="register_Click" />
         
         <br />
         <asp:Button ID="cancel" runat="server" Text="Cancel" OnClick="cancel_Click" style="height: 26px" />
         <br />
+
+
+       
     </div>
 </asp:Content>
