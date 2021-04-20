@@ -18,6 +18,12 @@ namespace AITR
             
         }
 
+
+        /// <summary>
+        /// clear session values redirect to start page
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void cancel_Click(object sender, EventArgs e)
         {
             HttpContext.Current.Session[Constants.SESSION_ANSWER_LIST] = null;
@@ -30,44 +36,44 @@ namespace AITR
             Response.Redirect("startPage.aspx");
         }
 
+
+        /// <summary>
+        /// updates respondent table with register user info, validates text boxes 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void register_Click(object sender, EventArgs e)
         {
 
-            //bool isIncomplete = Controls.OfType<TextBox>().Any(textbox => string.IsNullOrWhiteSpace(textbox.Text));
-
-            //bool test = Controls.OfType<TextBox>().Any(textbox => string.IsNullOrWhiteSpace(textbox.Text));
-            
-            // if any textbox is missing values
-            
-            // if first name is missing
+            // warning if first name is missing
             if (string.IsNullOrWhiteSpace(firstName.Text))
             {
                 messageLabel.ForeColor = System.Drawing.Color.Red;
                 messageLabel.Text = "FIRST NAME TEXT FIELD MUST BE FILLED!!";
                 messageLabel.Visible = true;
             }
-            // if last name is missing
+            // warning if last name is missing
             else if (string.IsNullOrWhiteSpace(lastName.Text))
             {
                 messageLabel.ForeColor = System.Drawing.Color.Red;
                 messageLabel.Text = "LAST NAME TEXT FIELD MUST BE FILLED!!";
                 messageLabel.Visible = true;
             }
-            // if date of birth is missing
+            // warning if date of birth is missing
             else if (string.IsNullOrWhiteSpace(dob.Text))
             {
                 messageLabel.ForeColor = System.Drawing.Color.Red;
                 messageLabel.Text = "DATE OF BIRTH TEXT FIELD MUST BE FILLED!!";
                 messageLabel.Visible = true;
             }
-            // if phone number is missing
+            // warning if phone number is missing
             else if (string.IsNullOrWhiteSpace(phoneNumber.Text))
             {
                 messageLabel.ForeColor = System.Drawing.Color.Red;
                 messageLabel.Text = "PHONE NUMBER TEXT FIELD MUST BE FILLED!!";
                 messageLabel.Visible = true;
             }
-            // if email is missing
+            // warning if email is missing
             else if (string.IsNullOrWhiteSpace(email.Text))
             {
                 messageLabel.ForeColor = System.Drawing.Color.Red;
@@ -79,31 +85,30 @@ namespace AITR
             // all good register user
                 using (SqlConnection connection = OpenSqlConnection())
                 {
+                    // create command 
                     SqlCommand register = new SqlCommand(Constants.SQL_QUERY_USER_REGISTER, connection);
 
+                    // create parameters 
                     register.Parameters.Add(Constants.SQL_PARAMETER_RESPONDENT_ID, SqlDbType.Int, 4);
                     register.Parameters[Constants.SQL_PARAMETER_RESPONDENT_ID].Value = (int)HttpContext.Current.Session[Constants.SESSION_RESPONDENT];
 
                     register.Parameters.Add(Constants.SQL_PARAMETER_FIRST_NAME, SqlDbType.VarChar, 64);
-                    register.Parameters[Constants.SQL_PARAMETER_FIRST_NAME].Value = firstName.Text;
+                    register.Parameters[Constants.SQL_PARAMETER_FIRST_NAME].Value = firstName.Text.ToLower();
 
                     register.Parameters.Add(Constants.SQL_PARAMETER_LAST_NAME, SqlDbType.VarChar, 64);
-                    register.Parameters[Constants.SQL_PARAMETER_LAST_NAME].Value = lastName.Text;
-
+                    register.Parameters[Constants.SQL_PARAMETER_LAST_NAME].Value = lastName.Text.ToLower();
 
                     register.Parameters.Add(Constants.SQL_PARAMETER_EMAIL, SqlDbType.VarChar, 256);
-                    register.Parameters[Constants.SQL_PARAMETER_EMAIL].Value = email.Text;
-
+                    register.Parameters[Constants.SQL_PARAMETER_EMAIL].Value = email.Text.ToLower();
 
                     register.Parameters.Add(Constants.SQL_PARAMETER_PHONE_NUMBER, SqlDbType.VarChar, 64);
                     register.Parameters[Constants.SQL_PARAMETER_PHONE_NUMBER].Value = phoneNumber.Text;
-
 
                     register.Parameters.Add(Constants.SQL_PARAMETER_DOB, SqlDbType.Date, 3);
                     register.Parameters[Constants.SQL_PARAMETER_DOB].Value = DateTime.Parse(dob.Text);
 
                     int rowsAffected = 0;
-
+                        // execute command 
                     try
                     {
                         rowsAffected = register.ExecuteNonQuery();
@@ -114,21 +119,14 @@ namespace AITR
                         throw new Exception(ex.Message);
 
                     }
-
+                    // if succesful registration
                     if (rowsAffected != 0)
                     {
                         messageLabel.ForeColor = System.Drawing.Color.Green;
                         messageLabel.Text = "REGISTER SUCCESSFUL";
                         messageLabel.Visible = true;
 
-
-                        System.Timers.Timer timer = new System.Timers.Timer();
-                        timer.Interval = 5000;
-
-                        timer.Elapsed += new ElapsedEventHandler(timer_Elapsed);
-                        timer.Start();
-
-
+                        ClearTextBoxes();
                     }
 
 
@@ -138,15 +136,6 @@ namespace AITR
             }
 
 
-        }
-
-            
-
-
-
-        private void timer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            messageLabel.Visible = false;
         }
 
 
@@ -162,6 +151,18 @@ namespace AITR
             SqlConnection connection = new SqlConnection(connectionString);
             connection.Open();
             return connection;
+        }
+
+        /// <summary>
+        ///  clear  text boxes after succesful registration
+        /// </summary>
+        private void ClearTextBoxes()
+        {
+            firstName.Text = null;
+            lastName.Text = null;
+            dob.Text = null;
+            phoneNumber.Text = null;
+            email.Text = null;
         }
 
     }

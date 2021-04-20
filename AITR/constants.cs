@@ -28,8 +28,12 @@ namespace AITR
         public const String DB_COLUMN_QUESTION_ID = "question_id";
         public const String DB_COLUMN_EXTRA_QUESTION_ID = "extra_question_id";
         public const String DB_COLUMN_NEXT_QUESTION_ID = "next_question_id";
+        public const String DB_COLUMN_VALUE = "value";
+        public const String DB_COLUMN_OPTION_ID = "option_id";
+        public const String DB_COLUMN_TYPED_ANSWER = "typed_answer";
 
-    
+
+
         public const String SQL_QUERY_GET_CURRENT_QUESTION_WITH_OPTIONS = "SELECT [question].question_id, [question].text, [question].question_type, [question].next_question_id, [option].option_id, [option].value, [option].extra_question_id FROM [question] INNER JOIN [option] ON [question].question_id = [option].question_id WHERE [question].question_id = ";
         public const String SQL_QUERY_GET_NEXT_QUESTION_ID = "SELECT next_question_id FROM [question] WHERE question_id = ";
         public const String SQL_QUERY_GET_EXTRA_QUESTION_ID = "SELECT extra_question_id FROM [option] WHERE option_id = ";
@@ -60,6 +64,43 @@ namespace AITR
         public const String SQL_PARAMETER_PHONE_NUMBER = "@phone_number";
         public const String SQL_PARAMETER_EMAIL = "@email";
         public const String SQL_PARAMETER_DOB = "@date_of_birth";
+
+
+        // staff page constants
+        public const String SQL_QUERY_GET_OPTIONS = "SELECT * FROM [option] WHERE question_id = ";
+        public const String SQL_QUERY_GET_DROPDOWN_OPTIONS = "SELECT DISTINCT [typed_answer], [option_id] FROM [answer] WHERE [question_id] = ";
+        public const String SQL_QUERY_SEARCH_FIRST_PART = "SELECT * FROM [respondent] WHERE [respondent_id] IN (SELECT [respondent_id] FROM [answer] WHERE [option_id] = ";
+        public const String SQL_QUERY_SEARCH_LAST_PART = ") ORDER BY [last_name] ASC";
+        public const String SQL_QUERY_SEARCH_MIDDLE_PART = " OR [option_id] = ";
+
+
+        public const String SQL_QUERY_DROPDOWN_SEARCH_FIRST_PART = "SELECT * FROM [respondent] WHERE [respondent_id] IN (SELECT [respondent_id] FROM [answer] WHERE [typed_answer] LIKE ";
+        public const String SQL_QUERY_DROPDOWN_SEARCH_MIDDLE_PART = " OR [typed_answer] LIKE ";
+        public const String SQL_QUERY_DROPDOWN_SEARCH_LAST_PART = ") ORDER BY [last_name] ASC";
+
+
+        public const String SQL_QUERY_TEXT_BOX_SEARCH = "SELECT * FROM [respondent] WHERE [first_name] LIKE @keyword OR [last_name] LIKE @keyword OR [email] LIKE @keyword ORDER BY [last_name] ASC";
+       
+
+
+        public const String SQL_PARAMETER_KEYWORD = "@keyword";   
+
+
+        public const int    QUESTION_ID_GENDER = 1;
+        public const int    QUESTION_ID_AGE = 2;
+        public const int QUESTION_ID_SUBURB = 4;
+        public const int QUESTION_ID_POSTCODE = 5;
+
+        public const int    QUESTION_ID_BANKS = 6;
+        public const int    QUESTION_ID_SERVICES = 7;
+        public const int    QUESTION_ID_MAGAZINES = 8;
+        public const int    QUESTION_ID_MAGAZINES_SECTIONS = 9;
+        public const int    QUESTION_ID_SPORTS = 10;
+        public const int    QUESTION_ID_TRAVEL = 11;
+
+
+
+
 
 
         public const String DB_QUESTION_TABLE_TEXT = "text";

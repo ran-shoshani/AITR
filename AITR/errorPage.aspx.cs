@@ -23,7 +23,18 @@ namespace AITR
             HttpContext.Current.Session[Constants.SESSION_EXTRA_QUESTIONS] = null;
             HttpContext.Current.Session[Constants.DB_COLUMN_EXTRA_QUESTION_ID] = null;
             HttpContext.Current.Session[Constants.DB_COLUMN_NEXT_QUESTION_ID] = null;
-            Response.Redirect("startPage.aspx");
+            
+            if ((bool)HttpContext.Current.Session[Constants.SESSION_AUTH])
+            {
+                Response.Redirect("staffPage.aspx");
+            }
+            else
+            {
+                Response.Redirect("startPage.aspx");
+
+            }
+
+
         }
     }
 }

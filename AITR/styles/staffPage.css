@@ -1,8 +1,30 @@
 ﻿body {
 }
+
 .container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
+}
+
+.filterContainer {
+    width: 75%;
+}
+
+.filterRow {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-evenly;
+}
+
+.checkBoxContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.searchContainer {
+
 }

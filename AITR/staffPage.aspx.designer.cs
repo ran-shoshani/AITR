@@ -33,6 +33,15 @@ namespace AITR
         protected global::System.Web.UI.WebControls.Label Label1;
 
         /// <summary>
+        /// Label2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label2;
+
+        /// <summary>
         /// genderList control.
         /// </summary>
         /// <remarks>
@@ -40,6 +49,15 @@ namespace AITR
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBoxList genderList;
+
+        /// <summary>
+        /// Label3 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label3;
 
         /// <summary>
         /// ageRangeList control.
@@ -51,6 +69,15 @@ namespace AITR
         protected global::System.Web.UI.WebControls.CheckBoxList ageRangeList;
 
         /// <summary>
+        /// Label4 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label4;
+
+        /// <summary>
         /// banksList control.
         /// </summary>
         /// <remarks>
@@ -58,6 +85,15 @@ namespace AITR
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBoxList banksList;
+
+        /// <summary>
+        /// Label5 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label5;
 
         /// <summary>
         /// bankServicesList control.
@@ -69,6 +105,15 @@ namespace AITR
         protected global::System.Web.UI.WebControls.CheckBoxList bankServicesList;
 
         /// <summary>
+        /// Label6 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label6;
+
+        /// <summary>
         /// magazinesList control.
         /// </summary>
         /// <remarks>
@@ -76,6 +121,15 @@ namespace AITR
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBoxList magazinesList;
+
+        /// <summary>
+        /// Label7 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label7;
 
         /// <summary>
         /// magazinesSectionsList control.
@@ -87,6 +141,15 @@ namespace AITR
         protected global::System.Web.UI.WebControls.CheckBoxList magazinesSectionsList;
 
         /// <summary>
+        /// Label8 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label8;
+
+        /// <summary>
         /// sportList control.
         /// </summary>
         /// <remarks>
@@ -94,6 +157,15 @@ namespace AITR
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBoxList sportList;
+
+        /// <summary>
+        /// Label9 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label9;
 
         /// <summary>
         /// travelDestinationsList control.
@@ -123,13 +195,13 @@ namespace AITR
         protected global::System.Web.UI.WebControls.DropDownList postcodeList;
 
         /// <summary>
-        /// clearFilterButton control.
+        /// dropDownsearchButton control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button clearFilterButton;
+        protected global::System.Web.UI.WebControls.Button dropDownsearchButton;
 
         /// <summary>
         /// searchWithFiltersButton control.
@@ -141,6 +213,15 @@ namespace AITR
         protected global::System.Web.UI.WebControls.Button searchWithFiltersButton;
 
         /// <summary>
+        /// clearFilterButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button clearFilterButton;
+
+        /// <summary>
         /// searchLable control.
         /// </summary>
         /// <remarks>
@@ -150,40 +231,31 @@ namespace AITR
         protected global::System.Web.UI.WebControls.Label searchLable;
 
         /// <summary>
-        /// firstName control.
+        /// searchTextbox control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox firstName;
+        protected global::System.Web.UI.WebControls.TextBox searchTextbox;
 
         /// <summary>
-        /// email control.
+        /// textboxSearchButton control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox email;
+        protected global::System.Web.UI.WebControls.Button textboxSearchButton;
 
         /// <summary>
-        /// searchButton control.
+        /// gridViewResults control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button searchButton;
-
-        /// <summary>
-        /// GridView1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView GridView1;
+        protected global::System.Web.UI.WebControls.GridView gridViewResults;
 
         /// <summary>
         /// logoutButton control.
