@@ -422,7 +422,7 @@ namespace AITR
             {
                 if (suburbList.Items.Count == 0)
                 {
-                    suburbList.Items.Add("select item");
+                    suburbList.Items.Add("Select Suburbs");
                     try
                     {
                         // get suburb options from database
@@ -467,7 +467,7 @@ namespace AITR
             {
                 if (postcodeList.Items.Count == 0)
                 {
-                    postcodeList.Items.Add("select item");
+                    postcodeList.Items.Add("select Post Code");
                     try
                     {
                         // get age options from database
@@ -717,6 +717,14 @@ namespace AITR
 
             }
         }
+
+
+
+
+
+
+
+
         /// <summary>
         ///  clears all selected values in all check boxes and dropdowns 
         /// </summary>
@@ -741,6 +749,11 @@ namespace AITR
             suburbList.SelectedIndex = 0;
         }
 
+
+
+
+
+
         /// <summary>
         /// search first name last name and email in respondent table with values from text box 
         /// </summary>
@@ -748,7 +761,8 @@ namespace AITR
         /// <param name="e"></param>
         protected void textboxSearchButton_Click(object sender, EventArgs e)
         {
-            // take value from text box and add wild cards
+            // take value from text box and add wild cards (% = zero or more characters)
+            // converts string into lowercase
             String keyword = "%" + searchTextbox.Text.ToLower() + "%";
 
             using (SqlConnection connection = OpenSqlConnection())
@@ -783,6 +797,13 @@ namespace AITR
 
             }
         }
+
+
+
+
+
+
+
         /// <summary>
         /// clears the data grid view from results
         /// set session auth to false
@@ -798,6 +819,10 @@ namespace AITR
             HttpContext.Current.Session[Constants.SESSION_AUTH] = false;
             Response.Redirect("startPage.aspx");
         }
+
+
+
+
         /// <summary>
         ///  clear the data grid view from results
         /// </summary>

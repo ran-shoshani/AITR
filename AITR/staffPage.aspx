@@ -67,7 +67,7 @@
                 </asp:DropDownList>
                 <asp:DropDownList ID="postcodeList" runat="server">
                 </asp:DropDownList>
-                <asp:Button ID="dropDownsearchButton" runat="server" Text="TextBox Search" OnClick="dropDownsearchButton_Click" />
+                <asp:Button ID="dropDownsearchButton" runat="server" Text="DropDown Search" OnClick="dropDownsearchButton_Click" />
                 <asp:Button ID="searchWithFiltersButton" runat="server" Text="CheckBox Search" OnClick="searchWithFiltersButton_Click" />
                 <asp:Button ID="clearFilterButton" runat="server" Text="Clear" OnClick="clearFilterButton_Click" />
 

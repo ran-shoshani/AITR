@@ -20,8 +20,8 @@ namespace AITR
             //assign the current question id from the session to a local variable so that the correct question can be fetched from the database
             int currentQuestionID = (int)HttpContext.Current.Session[Constants.SESSION_QUESTION_ID];
 
-            Console.Error.WriteLine("current questio id : ", currentQuestionID);
-            Console.WriteLine("current questio id : ", currentQuestionID);
+            //Console.Error.WriteLine("current questio id : ", currentQuestionID);
+            //Console.WriteLine("current questio id : ", currentQuestionID);
             // block of code that runs while there is connection to database
             using (SqlConnection connection = OpenSqlConnection())
             {
@@ -77,7 +77,7 @@ namespace AITR
 
                         case Constants.RADIOBUTTON_QUESTION:
 
-                            //create a radiobutton list and assign and ID
+                            //create a radiobutton list and assign an ID
                             RadioButtonList radioButtonList = new RadioButtonList();
                             radioButtonList.ID = Constants.RADIOBUTTONS_ANSWER_ID;
 
@@ -88,6 +88,7 @@ namespace AITR
 
 
                             // then loop through the rest data create a radio button for each option
+                            // reading second row of data to the last row of data
                             while (questionWithOptionsReader.Read())
                             {
 
@@ -104,6 +105,8 @@ namespace AITR
 
                             break;
 
+
+                            // check box option
                         case Constants.MULTIPLE_CHOICE_QUESTION:
 
                             //create a checkbox list and assign and ID
@@ -257,6 +260,8 @@ namespace AITR
                                 // read the row and check if it is null or not
                                 if (extraQuestionIdReader.Read())
                                 {
+
+                                    // ordinal gets the index/position of the column
                                     int extraQuestionIdColumnIndex = extraQuestionIdReader.GetOrdinal(Constants.DB_COLUMN_EXTRA_QUESTION_ID);
                                     if (!extraQuestionIdReader.IsDBNull(extraQuestionIdColumnIndex))
                                     {
@@ -390,6 +395,7 @@ namespace AITR
 
         /// <summary>
         /// check the session for previus answers then add new ones to the list
+        /// function stores asnwers data into session
         /// </summary>
         /// <param name="answerText">current answer text</param>
         /// <param name="optionId">current option id</param>
@@ -421,8 +427,8 @@ namespace AITR
         /// <param name="optionId">option id to check for extra question id<param>
         private static void checkForExtraQuestion(int optionId)
         {
-
-
+            // content of function moved to into nextButtonCliked to fix logical error
+            //logical error was that it loaded extra questions only at the end of the survey
 
 
             using (SqlConnection connection = OpenSqlConnection())
@@ -547,6 +553,7 @@ namespace AITR
 
                 try
                 {
+                    // executeCalar function retures the value of the first column of the first row of the created data
                     int respondent_id = (int)createRespondent.ExecuteScalar();
                     HttpContext.Current.Session[Constants.SESSION_RESPONDENT] = respondent_id;
                 }
@@ -565,6 +572,9 @@ namespace AITR
 
 
         }
+
+
+
 
 
         /// <summary>

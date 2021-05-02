@@ -50,7 +50,7 @@ namespace AITR
 
         public const String SQL_QUERY_GET_FIRST_QUESTION = "SELECT TOP 1 * FROM [question] ORDER BY question_id ASC; SELECT CAST(scope_identity() as int);";
 
-        // signin page
+        // signin page constants
         public const String SQL_QUERY_SIGN_IN = "SELECT * FROM staff WHERE user_name = @user_name AND password = @password";
         public const String SQL_PARAMETER_USER_NAME = "@user_name";
         public const String SQL_PARAMETER_PASSWORD = "@password";
@@ -86,6 +86,7 @@ namespace AITR
         public const String SQL_PARAMETER_KEYWORD = "@keyword";   
 
 
+        // staff page checkbox list and dropdown-list
         public const int    QUESTION_ID_GENDER = 1;
         public const int    QUESTION_ID_AGE = 2;
         public const int QUESTION_ID_SUBURB = 4;
@@ -102,7 +103,7 @@ namespace AITR
 
 
 
-
+        // column names in database table
         public const String DB_QUESTION_TABLE_TEXT = "text";
         public const String DB_QUESTION_TABLE_QUESTION_ID = "question_id";
         public const String DB_QUESTION_TABLE_NEXT_QUESTION_ID = "next_question_id";
@@ -113,6 +114,7 @@ namespace AITR
         public const String DB_OPTION_TABLE_EXTRA_QUESTION_ID = "extra_question_id";
 
 
+        // surveyPage constants for answers and options
         public const String TEXTBOX_QUESTION = "text_input";
         public const String RADIOBUTTON_QUESTION = "radio_button";
         public const String MULTIPLE_CHOICE_QUESTION = "multiple_choice";

@@ -25,6 +25,7 @@ namespace AITR
 
                 try
                 {
+                    // executeCalar function returnes the value of the first column of the first row of the created data
                     int firstQuestionId = (int)getFirstQuestion.ExecuteScalar();
                     HttpContext.Current.Session[Constants.SESSION_QUESTION_ID] = firstQuestionId;
                 }
@@ -55,7 +56,7 @@ namespace AITR
         }
 
 
-
+        ///  login for admin page
         protected void loginButton_Click(object sender, EventArgs e)
         {
             
@@ -72,6 +73,10 @@ namespace AITR
         }
 
 
+        /// <summary>
+        /// get IP address
+        /// </summary>
+        /// <returns></returns>
         protected string GetIPAddress()
         {
             //get IP through PROXY
@@ -129,6 +134,8 @@ namespace AITR
             }
             return ipAddress;
         }
+  
+        
         /// <summary>
         /// setup new connection to database 
         /// </summary>

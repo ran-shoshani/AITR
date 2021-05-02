@@ -29,7 +29,7 @@
         <asp:Button ID="register" runat="server" Text="Register" OnClick="register_Click" />
         
         <br />
-        <asp:Button ID="cancel" runat="server" Text="Cancel" OnClick="cancel_Click" style="height: 26px" />
+        <asp:Button ID="cancel" runat="server" Text="Cancel/Exit" OnClick="cancel_Click" style="height: 26px" />
         <br />
 
 
